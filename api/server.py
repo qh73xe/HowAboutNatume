@@ -16,7 +16,7 @@ class AskHandler(RequestHandler):
 
     def get(self):
         """Question に答えます."""
-        from han.ask import ask
+        from ask import ask
         author = self.get_argument('author')
         question = self.get_argument('question')
         answers = {

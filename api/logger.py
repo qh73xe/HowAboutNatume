@@ -12,7 +12,7 @@ def getLogger(logname):
 
     from rainbow_logging_handler import RainbowLoggingHandler
 
-    from han.config import PROJECT_ROOT
+    from config import PROJECT_ROOT
 
     logfile = path.join(PROJECT_ROOT, 'log', logname + '.log')
     if not path.exists(logfile):
