@@ -1,0 +1,4 @@
+mongodb:
+    - user: han-api
+    - db: han-api
+    - passwd: hd7NcCbDShry
