@@ -8,6 +8,8 @@ from tornado.options import parse_command_line
 from tornado.web import Application, RequestHandler
 
 from tornado.options import define, options
+from tokenizer import get_entity
+
 define("port", default=8000, help="run on the given port", type=int)
 
 
@@ -20,7 +22,7 @@ class AskHandler(RequestHandler):
         author = self.get_argument('author')
         question = self.get_argument('question')
         answers = {
-            'answers': ask(author, question)
+            'answers': ask(author, get_entity(question))
         }
         self.write(
             dumps(

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*
 """生成されたモデルから類義語を返します."""
-from logger import getLogger
 from typing import List
+
+from tokenizer import get_noun, get_adjective
+from logger import getLogger
+
 
 LOGGER = getLogger('ASK_MODULE')
 
@@ -20,19 +23,21 @@ def ask(author: str, querys: List[str]) -> List:
     """Get 5 similar words for querys."""
     model = get_model(author)
     try:
-        results = model.most_similar(positive=querys, topn=10)
+        results = model.most_similar(positive=querys, topn=150)
     except Exception as e:
         msg = "{author} can't answer. (hint: {hint})".format(
             author=author, hint=str(e)
         )
         LOGGER.error(msg)
     else:
+        noun = []
+        adjective = []
+
         try:
-            words = [
-                {'word': result[0], 'similarity': result[1]}
-                for result in results
-                if len(result[0]) > 1
-            ]
+            for result in results:
+                word = result[0]
+                noun.extend(get_noun(word))
+                adjective.extend(get_adjective(word))
         except Exception as e:
             msg = ' '.join([
                 "Querys have some problems",
@@ -42,13 +47,15 @@ def ask(author: str, querys: List[str]) -> List:
             ])
             LOGGER.error(msg)
         else:
-            if len(words) > 3:
-                return words[:3]
-            else:
-                return words
+            return {
+                'nouns': noun[:3],
+                'adjective': adjective[:1]
+            }
 
 
 if __name__ == "__main__":
     import sys
-    querys = sys.argv[1].split(',')
+    from tokenizer import get_entity
+    querys = get_entity(sys.argv[1])
+    print('querys: {}'.format(querys))
     print(ask('夏目漱石', querys))
